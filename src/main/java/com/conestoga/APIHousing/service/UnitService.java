@@ -1,87 +1,87 @@
 package com.conestoga.APIHousing.service;
 
-import com.conestoga.APIHousing.dtos.UnitDTO;
 import com.conestoga.APIHousing.interfaces.ResidenceRepository;
-import com.conestoga.APIHousing.interfaces.UnitRepository;
-import com.conestoga.APIHousing.model.Unit;
-import org.springframework.stereotype.Service;
-
+import com.conestoga.APIHousing.interfaces.SubresidenceRepository;
+import com.conestoga.APIHousing.model.Subresidence;
+import com.conestoga.APIHousing.utils.FileUpload;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.logging.Logger;
+import org.springframework.stereotype.Service;
 
 @Service
 public class UnitService {
-
-    private final UnitRepository unitRepository;
+    private final SubresidenceRepository unitRepository;
     private final ResidenceRepository residenceRepository;
+    Logger logger = Logger.getLogger(UnitService.class.getName());
 
-    public UnitService(UnitRepository unitRepository, ResidenceRepository residenceRepository) {
+    public UnitService(SubresidenceRepository unitRepository, ResidenceRepository residenceRepository) {
         this.unitRepository = unitRepository;
         this.residenceRepository = residenceRepository;
     }
 
-    public UnitDTO createUnit(UnitDTO unitDTO) {
-        Unit unit = new Unit();
-        unit.setResidence(residenceRepository.findById(unitDTO.getResidenceId()).orElse(null));
-        unit.setUnitNumber(unitDTO.getUnitNumber());
-        unit.setUnitType(unitDTO.getUnitType());
-        unit.setUnitDescription(unitDTO.getUnitDescription());
-        unit.setMonthlyRent(unitDTO.getMonthlyRent());
+    public Subresidence createUnit(Subresidence unit) throws IOException {
+        unit.setImg(FileUpload.convertBase64ToFile(unit.getImg()));
+        logger.info("Unit created: " + unit);
+        return unitRepository.save(unit);
 
-        Unit savedUnit = unitRepository.save(unit);
-
-        return convertToDTO(savedUnit);
     }
 
-    public UnitDTO getUnitById(Long unitId) {
-        Optional<Unit> unitOptional = unitRepository.findById(unitId);
-        return unitOptional.map(this::convertToDTO).orElse(null);
-    }
-
-    public UnitDTO updateUnit(Long unitId, UnitDTO unitDTO) {
-        Optional<Unit> unitOptional = unitRepository.findById(unitId);
-        if (unitOptional.isPresent()) {
-            Unit unit = unitOptional.get();
-            unit.setResidence(residenceRepository.findById(unitDTO.getResidenceId()).orElse(null));
-            unit.setUnitNumber(unitDTO.getUnitNumber());
-            unit.setUnitType(unitDTO.getUnitType());
-            unit.setUnitDescription(unitDTO.getUnitDescription());
-            unit.setMonthlyRent(unitDTO.getMonthlyRent());
-
-            Unit updatedUnit = unitRepository.save(unit);
-
-            return convertToDTO(updatedUnit);
+    public Subresidence getUnitById(Long unitId) {
+        Optional<Subresidence> unitOptional = unitRepository.findById(unitId);
+        if (unitOptional.isPresent()){
+            logger.info("Unit found: " + unitOptional.get());
+        } else {
+            logger.warning("Unit not found for id: " + unitId);
         }
-        return null;
+        return unitOptional.orElse(null);
+    }
+
+    public Subresidence updateUnit(Long unitId, Subresidence updatedUnit) throws IOException {
+        Optional<Subresidence> unitOptional = unitRepository.findById(unitId);
+        if (unitOptional.isPresent()) {
+            Subresidence existingUnit = unitOptional.get();
+
+            // Copy the updated image data to the existing unit
+            existingUnit.setImg(updatedUnit.getImg());
+
+            logger.info("Unit updated: " + existingUnit);
+            return unitRepository.save(existingUnit);
+        } else {
+            logger.warning("Unit not found for id: " + unitId);
+            throw new IOException("Unit not found for id: " + unitId);
+        }
     }
 
     public boolean deleteUnit(Long unitId) {
-        Optional<Unit> unitOptional = unitRepository.findById(unitId);
+        Optional<Subresidence> unitOptional = unitRepository.findById(unitId);
         if (unitOptional.isPresent()) {
             unitRepository.delete(unitOptional.get());
+            logger.info("Unit deleted: " + unitOptional.get());
             return true;
+        } else {
+            logger.warning("Unit not found for id: " + unitId);
         }
         return false;
     }
 
-    public List<UnitDTO> getAllUnits() {
-        List<Unit> units = unitRepository.findAll();
-        return units.stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+    public List<Subresidence> getAllUnits() {
+        List<Subresidence> units = unitRepository.findAll();
+        logger.info("Units found: " + units.size());
+        return units;
     }
 
-    private UnitDTO convertToDTO(Unit unit) {
-        UnitDTO unitDTO = new UnitDTO();
-        unitDTO.setUnitId(unit.getUnitId());
-        unitDTO.setResidenceId(unit.getResidence().getResidenceId());
-        unitDTO.setUnitNumber(unit.getUnitNumber());
-        unitDTO.setUnitType(unit.getUnitType());
-        unitDTO.setUnitDescription(unit.getUnitDescription());
-        unitDTO.setMonthlyRent(unit.getMonthlyRent());
-        return unitDTO;
-    }
+    // private Unit convertToDTO(Unit unit) {
+    //     Unit unitDTO = new UnitDTO();
+    //     unitDTO.setUnitId(unit.getunit_id());
+    //     unitDTO.setResidenceId(unit.getResidence().getResidenceId());
+    //     unitDTO.setUnitNumber(unit.getUnitNumber());
+    //     unitDTO.setUnitType(unit.getUnitType());
+    //     unitDTO.setUnitDescription(unit.getUnitDescription());
+    //     unitDTO.setMonthlyRent(unit.getMonthlyRent());
+    //     return unitDTO;
+    // }
 }
 
 

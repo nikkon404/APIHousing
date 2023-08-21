@@ -1,7 +1,10 @@
 package com.conestoga.APIHousing.model;
 
-import org.springframework.data.annotation.Id;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.*;
 
 @Entity
@@ -9,11 +12,6 @@ import javax.persistence.*;
 public class Residence {
 
     @javax.persistence.Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false, updatable = false, insertable = false, unique = true)
-    private Long id;
-
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "residence_id")
     private Long residenceId;
@@ -27,18 +25,29 @@ public class Residence {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "img")
+    private String img;
+
+  @OneToMany(mappedBy = "residence", fetch = FetchType.LAZY)
+  private List<Subresidence> subResidences = new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "manager_id")
+    @JsonIgnore  // Add this annotation to break the cycle in JSON serialization
     private Account manager;
 
-    public Long getId() {
-        return id;
+
+ 
+    // Getters and setters for the existing properties
+
+    public List<Subresidence> getSubResidences() {
+        return subResidences;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setSubResidences(List<Subresidence> units) {
+        this.subResidences = units;
     }
-
+  
     public Long getResidenceId() {
         return residenceId;
     }
@@ -77,5 +86,13 @@ public class Residence {
 
     public void setManager(Account manager) {
         this.manager = manager;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
     }
 }

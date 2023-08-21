@@ -4,47 +4,64 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import java.util.Date;
+import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import javax.crypto.SecretKey;
-import java.util.Date;
 
 @Component
 public class JwtUtil {
 
-    @Value("${jwt.expiration}")
-    private int expiration;
+  private final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-    public String generateToken(String username) {
-        SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+  @Value("${jwt.secret}")
+  String secretKey;
 
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + expiration * 1000);
+  @Value("${jwt.expiration}")
+  int expiration;
 
-        return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
-                // signWith() takes in a key and an algorithm
-                .signWith(key)
-                .compact();
+  public String generateToken(String username) {
+
+    Date now = new Date();
+    Date expiryDate = new Date(now.getTime() + expiration * 1000L);
+
+    return Jwts.builder()
+        .setSubject(username)
+        .setIssuedAt(now)
+        .setExpiration(expiryDate)
+        .signWith(key, SignatureAlgorithm.HS256)
+        .compact();
+  }
+
+  // public boolean validateToken(String token) {
+  //     SecretKey key = Keys.hmacShaKeyFor(secretKey.getBytes());
+
+  //     try {
+  //         Claims claims = Jwts.parserBuilder()
+  //                 .setSigningKey(key)
+  //                 .build()
+  //                 .parseClaimsJws(token)
+  //                 .getBody();
+
+  //         return !claims.getExpiration().before(new Date());
+  //     } catch (Exception ex) {
+  //         // Exception indicates token is not valid
+  //         return false;
+  //     }
+
+  public boolean validateToken(String token) {
+    try {
+      Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+      return true;
+    } catch (Exception e) {
+      return false;
     }
+  }
 
-    public boolean validateToken(String token, String username) {
-        SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+  public String extractUsername(String token) {
 
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+    Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
 
-        return claims.getSubject().equals(username) && !isTokenExpired(claims);
-    }
-
-    private boolean isTokenExpired(Claims claims) {
-        Date expirationDate = claims.getExpiration();
-        return expirationDate.before(new Date());
-    }
+    return claims.getSubject();
+  }
 }

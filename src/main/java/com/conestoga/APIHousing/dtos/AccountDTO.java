@@ -1,28 +1,37 @@
 package com.conestoga.APIHousing.dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 
 public class AccountDTO {
     private Long id;
-    private String password;
+    private String stripeCustomerId;
     private String email;
     private String firstName;
     private String lastName;
     private String phoneNumber;
     private String address;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
+
+
     private String fcm;
     private String collegeName;
     private String studentId;
     private String postalCode;
+    private int role;
+    private String img;
+    private String password;
 
     public AccountDTO() {
     }
 
-    public AccountDTO(Long id, String password, String email, String firstName, String lastName,
-                      String phoneNumber, String address, LocalDate dateOfBirth, String fcm, String collegeName, String studentId, String postalCode) {
+    public AccountDTO(Long id,  String email, String firstName, String lastName,
+                      String phoneNumber, String address, LocalDate dateOfBirth, String fcm, String collegeName, String studentId, String postalCode, int role,
+                      String img, String password
+    ) {
         this.id = id;
-        this.password = password;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -33,12 +42,16 @@ public class AccountDTO {
         this.collegeName = collegeName;
         this.studentId = studentId;
         this.postalCode = postalCode;
+        this.role = role;
+        this.img = img;
+        this.password = password;
 
     }
 
-    public AccountDTO(String password, String email, String firstName, String lastName,
-                      String phoneNumber, String address, LocalDate dateOfBirth, String fcm, String collegeName, String studentId, String postalCode) {
-        this.password = password;
+    public AccountDTO(String email, String firstName, String lastName,
+                      String phoneNumber, String address, LocalDate dateOfBirth, String fcm, String collegeName, String studentId, String postalCode,
+                      int role, String img, String password
+    ) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -49,6 +62,9 @@ public class AccountDTO {
         this.collegeName = collegeName;
         this.studentId = studentId;
         this.postalCode = postalCode;
+        this.role = role;
+        this.img = img;
+        this.password = password;
     }
 
     // Getters and Setters
@@ -61,13 +77,6 @@ public class AccountDTO {
     }
 
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     public String getEmail() {
         return email;
@@ -117,39 +126,69 @@ public class AccountDTO {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public void setFcm(String fcm) {
-        this.fcm = fcm;
-    }
-
     public String getFcm() {
         return fcm;
     }
 
-    public void setCollegeName(String collegeName) {
-        this.collegeName = collegeName;
+    public void setFcm(String fcm) {
+        this.fcm = fcm;
     }
 
     public String getCollegeName() {
         return collegeName;
     }
 
-    public void setStudentId(String studentId) {
-        this.studentId = studentId;
+    public void setCollegeName(String collegeName) {
+        this.collegeName = collegeName;
     }
 
     public String getStudentId() {
         return studentId;
     }
 
-    public void setPostalCode(String postalCode) {
-        this.postalCode = postalCode;
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
     }
 
     public String getPostalCode() {
         return postalCode;
     }
 
-    public AccountDTO copy() {
-        return new AccountDTO(id, password, email, firstName, lastName, phoneNumber, address, dateOfBirth, fcm, collegeName, studentId, postalCode);
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
     }
+
+    public int getRole() {
+        return role;
+    }
+
+    public void setRole(int role) {
+        this.role = role;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getStripeCustomerId() {
+        return stripeCustomerId;
+    }
+
+    public void setStripeCustomerId(String stripeCustomerId) {
+        this.stripeCustomerId = stripeCustomerId;
+    }
+
+    
 }

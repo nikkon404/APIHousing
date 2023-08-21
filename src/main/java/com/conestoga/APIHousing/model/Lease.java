@@ -1,51 +1,40 @@
 package com.conestoga.APIHousing.model;
 
-import org.springframework.data.annotation.Id;
-
+import java.util.Date;
 import javax.persistence.*;
-import java.time.LocalDate;
 
 @Entity
 @Table(name = "leases")
 public class Lease {
     @javax.persistence.Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false, updatable = false, insertable = false, unique = true)
-    private Long id;
-
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "lease_id")
     private Long leaseId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "unit_id")
-    private Unit unit;
+    private Subresidence subresidence;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private Account user;
 
+
+    @Column(name = "unit_no")
+    private String unitNo;
+
     @Column(name = "lease_start_date")
-    private LocalDate leaseStartDate;
+    private Date leaseStartDate;
 
     @Column(name = "lease_end_date")
-    private LocalDate leaseEndDate;
+    private Date leaseEndDate;
 
-    @Column(name = "lease_length")
-    private Integer leaseLength;
+
 
     @Column(name = "lease_status")
-    private String leaseStatus;
+    private int leaseStatus;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+ 
     public Long getLeaseId() {
         return leaseId;
     }
@@ -54,12 +43,12 @@ public class Lease {
         this.leaseId = leaseId;
     }
 
-    public Unit getUnit() {
-        return unit;
+    public Subresidence getSubresidence() {
+        return subresidence;
     }
 
-    public void setUnit(Unit unit) {
-        this.unit = unit;
+    public void setSubresience(Subresidence subresidence) {
+        this.subresidence = subresidence;
     }
 
     public Account getUser() {
@@ -70,35 +59,36 @@ public class Lease {
         this.user = user;
     }
 
-    public LocalDate getLeaseStartDate() {
+    public Date getLeaseStartDate() {
         return leaseStartDate;
     }
 
-    public void setLeaseStartDate(LocalDate leaseStartDate) {
+    public void setLeaseStartDate(Date leaseStartDate) {
         this.leaseStartDate = leaseStartDate;
     }
 
-    public LocalDate getLeaseEndDate() {
+    public Date getLeaseEndDate() {
         return leaseEndDate;
     }
 
-    public void setLeaseEndDate(LocalDate leaseEndDate) {
+    public void setLeaseEndDate(Date leaseEndDate) {
         this.leaseEndDate = leaseEndDate;
     }
 
-    public Integer getLeaseLength() {
-        return leaseLength;
-    }
 
-    public void setLeaseLength(Integer leaseLength) {
-        this.leaseLength = leaseLength;
-    }
-
-    public String getLeaseStatus() {
+    public int getLeaseStatus() {
         return leaseStatus;
     }
 
-    public void setLeaseStatus(String leaseStatus) {
+    public void setLeaseStatus(int leaseStatus) {
         this.leaseStatus = leaseStatus;
+    }
+
+    public String getUnitNo() {
+        return unitNo;
+    }
+
+    public void setUnitNo(String unitNo) {
+        this.unitNo = unitNo;
     }
 }

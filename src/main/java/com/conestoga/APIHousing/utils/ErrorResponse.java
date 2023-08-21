@@ -4,19 +4,19 @@ import org.springframework.http.HttpStatus;
 
 public class ErrorResponse {
 
-    private HttpStatus status;
-    private String message;
+  private final HttpStatus status;
+  private final String message;
 
-    public ErrorResponse(HttpStatus status, String message) {
-        this.status = status;
-        this.message = message;
-    }
+  public ErrorResponse(HttpStatus status, String message) {
+    this.status = status;
+    this.message = message;
+  }
 
-    public HttpStatus getStatus() {
-        return status;
-    }
+  public HttpStatus getStatus() {
+    return status;
+  }
 
-    public String getMessage() {
-        return message;
-    }
+  public String getMessage() {
+    return message;
+  }
 }

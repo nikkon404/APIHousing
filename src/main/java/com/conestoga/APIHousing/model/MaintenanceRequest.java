@@ -1,47 +1,38 @@
 package com.conestoga.APIHousing.model;
 
-import org.springframework.data.annotation.Id;
-
+import java.util.Date;
 import javax.persistence.*;
-import java.time.LocalDate;
 
 @Entity
 @Table(name = "maintenance_requests")
 public class MaintenanceRequest {
     @javax.persistence.Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false, updatable = false, insertable = false, unique = true)
-    private Long id;
-
-    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "request_id")
     private Long requestId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "unit_id")
-    private Unit unit;
+    private Subresidence unit;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private Account user;
 
     @Column(name = "request_date")
-    private LocalDate requestDate;
+    private Date requestDate;
 
     @Column(name = "request_description")
     private String requestDescription;
 
     @Column(name = "request_status")
-    private String requestStatus;
+    private int requestStatus;
 
-    public Long getId() {
-        return id;
-    }
+    @Column(name = "img")
+    private String img;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @Column(name = "remarks")
+    private String remarks;
 
     public Long getRequestId() {
         return requestId;
@@ -51,11 +42,11 @@ public class MaintenanceRequest {
         this.requestId = requestId;
     }
 
-    public Unit getUnit() {
+    public Subresidence getUnit() {
         return unit;
     }
 
-    public void setUnit(Unit unit) {
+    public void setUnit(Subresidence unit) {
         this.unit = unit;
     }
 
@@ -67,11 +58,11 @@ public class MaintenanceRequest {
         this.user = user;
     }
 
-    public LocalDate getRequestDate() {
+    public Date getRequestDate() {
         return requestDate;
     }
 
-    public void setRequestDate(LocalDate requestDate) {
+    public void setRequestDate(Date requestDate) {
         this.requestDate = requestDate;
     }
 
@@ -83,11 +74,27 @@ public class MaintenanceRequest {
         this.requestDescription = requestDescription;
     }
 
-    public String getRequestStatus() {
+    public int getRequestStatus() {
         return requestStatus;
     }
 
-    public void setRequestStatus(String requestStatus) {
+    public void setRequestStatus(int requestStatus) {
         this.requestStatus = requestStatus;
+    }
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
+    }
+
+    //get and set remarks
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
     }
 }

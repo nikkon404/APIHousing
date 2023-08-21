@@ -101,3 +101,4 @@ gradle/wrapper/gradle-wrapper.properties
 
 # Gradle specific files
 .gradle/
+static/
